@@ -1,6 +1,15 @@
 # Changelog
 
-## [1.0.0] - 2023-09-15
+## [1.1.0] - 2025-01-04
+### Changes
+- Added support for [GroovyScript](https://cleanroommc.com/groovy-script/)
+- Rewrote the recipe system to use less janky checks
+- added more localization support
 
-### Added
-- This is a default template changelog that follows the [KeepAChangelog Convention](https://keepachangelog.com/en/1.1.0/)
+### Bugfixes
+- Crash when loading on a server
+- Adding multiple particle effects to the core/pedestals after crafting only shows one
+- Grass Pedestal has grey texture
+
+## [1.0.2] - 2024-11-01
+- Forked the repo

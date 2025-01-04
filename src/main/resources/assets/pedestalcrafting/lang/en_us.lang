@@ -3,8 +3,12 @@ itemGroup.pedestalcrafting=Pedestal Crafting
 
 config.displaySpeed=Item Display Speed
 config.displaySpeed.tooltip=The speed at which items rotate, rise and fall on the pedestals - rotations/sec
+config.horizontalRadius=Horizontal Radius
+config.horizontalRadius.tooltip=The maximum distance the core looks for pedestals in the x and z direction
+config.verticalRadius=Vertical Radius
+config.verticalRadius.tooltip=The maximum distance the core looks for pedestals in the y direction
 
-gui.jei.category.pedestal=Pedestal
+gui.jei.category.pedestal=Pedestal Crafting
 
 # Items
 tile.pedestal.name=Pedestal

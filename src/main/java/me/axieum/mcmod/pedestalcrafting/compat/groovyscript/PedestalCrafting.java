@@ -76,7 +76,7 @@ public class PedestalCrafting extends VirtualizedRegistry<PedestalRecipe> {
     }
 
     @Property(property = "input", comp = @Comp(gte = 2))
-    @Property(property = "output", comp = @Comp(gte = 0, lte = 1))
+    @Property(property = "output", comp = @Comp(eq = 1))
     public static class RecipeBuilder extends AbstractRecipeBuilder<PedestalRecipe> {
 
         @Property
@@ -88,12 +88,18 @@ public class PedestalCrafting extends VirtualizedRegistry<PedestalRecipe> {
         @Property
         private HashMap<EnumParticleTypes, Integer> particlesPostCraftPedestal = new HashMap<>();
 
-        @Property(comp = @Comp(gte = 5))
+        @Property(comp = @Comp(gte = 5), defaultValue = "5")
         private Integer ticks = 5;
 
         @RecipeBuilderMethodDescription(field = "particlesCrafting")
         public RecipeBuilder addCraftingParticle(String particle, int count) {
             this.particlesCrafting.put(EnumParticleTypes.getByName(particle), count);
+            return this;
+        }
+
+        @RecipeBuilderMethodDescription(field = "particlesCrafting")
+        public RecipeBuilder addCraftingParticle(EnumParticleTypes particle, int count) {
+            this.particlesCrafting.put(particle, count);
             return this;
         }
 
@@ -103,9 +109,21 @@ public class PedestalCrafting extends VirtualizedRegistry<PedestalRecipe> {
             return this;
         }
 
+        @RecipeBuilderMethodDescription(field = "particlesPostCraftCore")
+        public RecipeBuilder addPostCraftCoreParticle(EnumParticleTypes particle, int count) {
+            this.particlesPostCraftCore.put(particle, count);
+            return this;
+        }
+
         @RecipeBuilderMethodDescription(field = "particlesPostCraftPedestal")
         public RecipeBuilder addPostCraftPedestalParticle(String particle, int count) {
             this.particlesPostCraftPedestal.put(EnumParticleTypes.getByName(particle), count);
+            return this;
+        }
+
+        @RecipeBuilderMethodDescription(field = "particlesPostCraftPedestal")
+        public RecipeBuilder addPostCraftPedestalParticle(EnumParticleTypes particle, int count) {
+            this.particlesPostCraftPedestal.put(particle, count);
             return this;
         }
 

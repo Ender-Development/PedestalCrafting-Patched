@@ -6,16 +6,18 @@ This is a fork of [Pedestal Crafting](https://www.curseforge.com/minecraft/mc-mo
 
 ## Changes
 ### Bugfixes
-- [Crash when loading on a server](https://github.com/axieum/PedestalCrafting/issues/22)
-- [Adding multiple particle effects to the core/pedestals after crafting only shows one](https://github.com/axieum/PedestalCrafting/issues/5)
-- [Grass Pedestal has grey texture](https://github.com/axieum/PedestalCrafting/issues/3)
+- ✅[Crash when loading on a server](https://github.com/axieum/PedestalCrafting/issues/22)
+- ✅[Adding multiple particle effects to the core/pedestals after crafting only shows one](https://github.com/axieum/PedestalCrafting/issues/5)
+- ✅[Grass Pedestal has grey texture](https://github.com/axieum/PedestalCrafting/issues/3)
 
 ### Improvements
-- [Add support for ingredient transformations](https://github.com/axieum/PedestalCrafting/issues/4)
-- [Locking recipes to only accept certain pedestal variants](https://github.com/axieum/PedestalCrafting/issues/2)
+- ✅rewrote the recipe system to use less janky checks
+- ✅added support for [GroovyScript](https://cleanroommc.com/groovy-script/)
+- 🔳[Add support for ingredient transformations](https://github.com/axieum/PedestalCrafting/issues/4)
+- 🔳[Locking recipes to only accept certain pedestal variants](https://github.com/axieum/PedestalCrafting/issues/2)
 
 ### More Localization
-- Indonesian, Turkish, Hindi, Dutch, German, Swedish, Arabic, Italian
+- ✅Indonesian, Turkish, Hindi, Dutch, German, Swedish, Arabic, Italian
 
 ## Description
 
