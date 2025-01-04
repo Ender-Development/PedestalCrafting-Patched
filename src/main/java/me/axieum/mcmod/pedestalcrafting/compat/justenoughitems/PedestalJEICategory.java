@@ -1,6 +1,5 @@
 package me.axieum.mcmod.pedestalcrafting.compat.justenoughitems;
 
-import me.axieum.mcmod.pedestalcrafting.PedestalCrafting;
 import me.axieum.mcmod.pedestalcrafting.Tags;
 import me.axieum.mcmod.pedestalcrafting.block.BlockPedestalCore;
 import me.axieum.mcmod.pedestalcrafting.block.ModBlocks;
@@ -10,7 +9,7 @@ import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeCategory;
-import net.minecraft.client.resources.I18n;
+import mezz.jei.util.Translator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -50,7 +49,7 @@ public class PedestalJEICategory implements IRecipeCategory<PedestalJEIWrapper>
     @Override
     public String getTitle()
     {
-        return I18n.format("gui.jei.category.pedestal");
+        return Translator.translateToLocal("gui.jei.category.pedestal");
     }
 
     @Override
@@ -89,7 +88,7 @@ public class PedestalJEICategory implements IRecipeCategory<PedestalJEIWrapper>
         itemStacks.set(1, inputs.get(0));
 
         // Inputs
-        double angle = 360 / (inputs.size() - 1);
+        double angle = (double) 360 / (inputs.size() - 1);
         Point point = new Point(67, 9);
         Point center = new Point(67, 46);
 

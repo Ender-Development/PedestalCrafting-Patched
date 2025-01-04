@@ -13,10 +13,11 @@ import java.util.List;
 
 public class PedestalRecipe
 {
-    private ItemStack core, output;
-    private ArrayList<Object> input = new ArrayList<Object>();
-    private int ticks;
-    private ArrayList<HashMap<EnumParticleTypes, Integer>> particles = new ArrayList<HashMap<EnumParticleTypes, Integer>>(
+    private final ItemStack core;
+    private final ItemStack output;
+    private final ArrayList<Object> input = new ArrayList<>();
+    private final int ticks;
+    private final ArrayList<HashMap<EnumParticleTypes, Integer>> particles = new ArrayList<>(
             3);
 
     public PedestalRecipe(ItemStack output, int ticks, ItemStack core, Object... inputs)
@@ -50,9 +51,9 @@ public class PedestalRecipe
 
     private void initParticles()
     {
-        this.particles.add(0, new HashMap<EnumParticleTypes, Integer>());
-        this.particles.add(1, new HashMap<EnumParticleTypes, Integer>());
-        this.particles.add(2, new HashMap<EnumParticleTypes, Integer>());
+        this.particles.add(0, new HashMap<>());
+        this.particles.add(1, new HashMap<>());
+        this.particles.add(2, new HashMap<>());
     }
 
     public PedestalRecipe setParticles(@Nullable HashMap<EnumParticleTypes, Integer> particlesCrafting, @Nullable HashMap<EnumParticleTypes, Integer> particlesPostCraftCore, @Nullable HashMap<EnumParticleTypes, Integer> particlesPostCraftPedestal)

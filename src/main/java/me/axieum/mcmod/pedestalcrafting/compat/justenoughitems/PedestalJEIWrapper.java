@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public class PedestalJEIWrapper implements IRecipeWrapper
 {
-    private IJeiHelpers helpers;
+    private final IJeiHelpers helpers;
     private final PedestalRecipe recipe;
 
     public PedestalJEIWrapper(IJeiHelpers helpers, PedestalRecipe recipe)
@@ -57,7 +57,7 @@ public class PedestalJEIWrapper implements IRecipeWrapper
 
             SimpleDateFormat dateFormat = new SimpleDateFormat(formatString);
 
-            return Arrays.asList(dateFormat.format(new Date((long) (this.recipe.getTicks() / 20 * 1000))));
+            return Collections.singletonList(dateFormat.format(new Date((long) (this.recipe.getTicks() / 20 * 1000L))));
         }
 
         return Collections.emptyList();

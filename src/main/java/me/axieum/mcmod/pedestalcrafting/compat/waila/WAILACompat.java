@@ -1,7 +1,6 @@
 package me.axieum.mcmod.pedestalcrafting.compat.waila;
 
 import mcp.mobius.waila.api.*;
-import me.axieum.mcmod.pedestalcrafting.PedestalCrafting;
 import me.axieum.mcmod.pedestalcrafting.Tags;
 import me.axieum.mcmod.pedestalcrafting.block.BlockPedestal;
 import me.axieum.mcmod.pedestalcrafting.block.BlockPedestalCore;

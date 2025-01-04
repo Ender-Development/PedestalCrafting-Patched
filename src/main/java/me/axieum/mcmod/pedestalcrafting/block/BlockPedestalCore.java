@@ -257,6 +257,7 @@ public class BlockPedestalCore extends BlockTileBase<TilePedestalCore>
      * Handle correct colouring of Grass Pedestal
      */
 
+    @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public static void onColorHandle(ColorHandlerEvent.Block event)
     {

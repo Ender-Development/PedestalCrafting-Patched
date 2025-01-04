@@ -6,7 +6,6 @@ import crafttweaker.annotations.ZenDoc;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.oredict.IOreDictEntry;
-import me.axieum.mcmod.pedestalcrafting.PedestalCrafting;
 import me.axieum.mcmod.pedestalcrafting.Tags;
 import me.axieum.mcmod.pedestalcrafting.recipe.PedestalRecipe;
 import me.axieum.mcmod.pedestalcrafting.recipe.PedestalRecipeManager;

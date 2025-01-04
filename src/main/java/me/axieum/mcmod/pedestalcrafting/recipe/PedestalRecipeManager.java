@@ -8,7 +8,7 @@ public class PedestalRecipeManager
 {
     private static final PedestalRecipeManager INSTANCE = new PedestalRecipeManager();
 
-    private ArrayList<PedestalRecipe> recipes = new ArrayList<PedestalRecipe>();
+    private final ArrayList<PedestalRecipe> recipes = new ArrayList<PedestalRecipe>();
 
     public static PedestalRecipeManager getInstance()
     {

@@ -1,7 +1,6 @@
 package me.axieum.mcmod.pedestalcrafting.compat.theoneprobe;
 
 import mcjty.theoneprobe.api.*;
-import me.axieum.mcmod.pedestalcrafting.PedestalCrafting;
 import me.axieum.mcmod.pedestalcrafting.Tags;
 import me.axieum.mcmod.pedestalcrafting.block.BlockPedestalCore;
 import me.axieum.mcmod.pedestalcrafting.recipe.PedestalRecipe;
