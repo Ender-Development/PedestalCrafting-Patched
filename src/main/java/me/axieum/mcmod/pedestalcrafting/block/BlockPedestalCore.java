@@ -145,8 +145,8 @@ public class BlockPedestalCore extends BlockTileBase<TilePedestalCore>
         QUARTZBLOCK(Material.IRON, SoundType.STONE),
         SANDSTONE(Material.ROCK, SoundType.STONE);
 
-        private Material material;
-        private SoundType sound;
+        private final Material material;
+        private final SoundType sound;
 
         Variant(Material material, SoundType sound)
         {
@@ -166,6 +166,11 @@ public class BlockPedestalCore extends BlockTileBase<TilePedestalCore>
     }
 
     public static final PropertyEnum<Variant> VARIANT = PropertyEnum.create("type", Variant.class);
+
+    public void addVariant(Variant variant)
+    {
+        VARIANT.getAllowedValues().add(variant);
+    }
 
     @Override
     public BlockStateContainer createBlockState()

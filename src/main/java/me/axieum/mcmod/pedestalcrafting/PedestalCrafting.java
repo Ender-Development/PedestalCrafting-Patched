@@ -44,7 +44,7 @@ public class PedestalCrafting
     {
         @Override
         public ItemStack createIcon() {
-            return new ItemStack(ModBlocks.PEDESTAL_CORE, 1, BlockPedestalCore.Variant.QUARTZBLOCK.ordinal());
+            return new ItemStack(ModBlocks.PEDESTAL_CORE, 1, 0);
         }
     };
 
