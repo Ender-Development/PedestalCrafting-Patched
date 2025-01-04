@@ -2,6 +2,7 @@ package me.axieum.mcmod.pedestalcrafting.proxy;
 
 import crafttweaker.CraftTweakerAPI;
 import me.axieum.mcmod.pedestalcrafting.PedestalCrafting;
+import me.axieum.mcmod.pedestalcrafting.Tags;
 import me.axieum.mcmod.pedestalcrafting.compat.crafttweaker.Pedestal;
 import me.axieum.mcmod.pedestalcrafting.compat.theoneprobe.TOPCompat;
 import me.axieum.mcmod.pedestalcrafting.compat.waila.WAILACompat;
@@ -32,7 +33,7 @@ public class CommonProxy
 
     public void init(FMLInitializationEvent event)
     {
-        ConfigManager.sync(PedestalCrafting.MOD_ID, Config.Type.INSTANCE);
+        ConfigManager.sync(Tags.MOD_ID, Config.Type.INSTANCE);
     }
 
     public void postInit(FMLPostInitializationEvent event)
@@ -43,7 +44,7 @@ public class CommonProxy
     @SubscribeEvent
     public static void onConfigChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event)
     {
-        if (event.getModID().equals(PedestalCrafting.MOD_ID))
-            ConfigManager.sync(PedestalCrafting.MOD_ID, Config.Type.INSTANCE);
+        if (event.getModID().equals(Tags.MOD_ID))
+            ConfigManager.sync(Tags.MOD_ID, Config.Type.INSTANCE);
     }
 }

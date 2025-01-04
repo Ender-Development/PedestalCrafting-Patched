@@ -7,6 +7,7 @@ import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.oredict.IOreDictEntry;
 import me.axieum.mcmod.pedestalcrafting.PedestalCrafting;
+import me.axieum.mcmod.pedestalcrafting.Tags;
 import me.axieum.mcmod.pedestalcrafting.recipe.PedestalRecipe;
 import me.axieum.mcmod.pedestalcrafting.recipe.PedestalRecipeManager;
 import net.minecraft.item.ItemStack;
@@ -18,7 +19,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 
 import java.util.HashMap;
 
-@ZenClass("mods." + PedestalCrafting.MOD_ID + ".Pedestal")
+@ZenClass("mods." + Tags.MOD_ID + ".Pedestal")
 public class Pedestal
 {
     @ZenMethod

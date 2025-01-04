@@ -21,20 +21,17 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Mod(
-        modid = PedestalCrafting.MOD_ID,
-        name = PedestalCrafting.MOD_NAME,
-        version = PedestalCrafting.MOD_VERSION,
+        modid = Tags.MOD_ID,
+        name = Tags.MOD_NAME,
+        version = Tags.VERSION,
         dependencies = PedestalCrafting.MOD_DEPENDENCIES,
         useMetadata = true
 )
 public class PedestalCrafting
 {
-    public static final String MOD_ID = "pedestalcrafting";
-    public static final String MOD_NAME = "Pedestal Crafting";
-    public static final String MOD_VERSION = "@VERSION@";
     public static final String MOD_DEPENDENCIES = "after: crafttweaker; after: jei; after: theoneprobe; after:waila;";
 
-    @Mod.Instance(PedestalCrafting.MOD_ID)
+    @Mod.Instance(Tags.MOD_ID)
     public static PedestalCrafting instance;
 
     @SidedProxy(
@@ -43,11 +40,10 @@ public class PedestalCrafting
     )
     public static CommonProxy proxy;
 
-    public static final CreativeTabs CREATIVE_TAB = new CreativeTabs(MOD_ID)
+    public static final CreativeTabs CREATIVE_TAB = new CreativeTabs(Tags.MOD_ID)
     {
         @Override
-        public ItemStack getTabIconItem()
-        {
+        public ItemStack createIcon() {
             return new ItemStack(ModBlocks.PEDESTAL_CORE, 1, BlockPedestalCore.Variant.QUARTZBLOCK.ordinal());
         }
     };

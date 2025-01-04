@@ -2,6 +2,7 @@ package me.axieum.mcmod.pedestalcrafting.compat.theoneprobe;
 
 import mcjty.theoneprobe.api.*;
 import me.axieum.mcmod.pedestalcrafting.PedestalCrafting;
+import me.axieum.mcmod.pedestalcrafting.Tags;
 import me.axieum.mcmod.pedestalcrafting.block.BlockPedestalCore;
 import me.axieum.mcmod.pedestalcrafting.recipe.PedestalRecipe;
 import me.axieum.mcmod.pedestalcrafting.tile.TilePedestalCore;
@@ -27,7 +28,7 @@ public class TOPCompat
         FMLInterModComms.sendFunctionMessage(
                 "theoneprobe",
                 "getTheOneProbe",
-                "me.axieum.mcmod." + PedestalCrafting.MOD_ID + ".compat.theoneprobe.TOPCompat$GetTheOneProbe"
+                "me.axieum.mcmod." + Tags.MOD_ID + ".compat.theoneprobe.TOPCompat$GetTheOneProbe"
         );
     }
 
@@ -46,7 +47,7 @@ public class TOPCompat
                 @Override
                 public String getID()
                 {
-                    return PedestalCrafting.MOD_ID + ":default";
+                    return Tags.MOD_ID + ":default";
                 }
 
                 @Override

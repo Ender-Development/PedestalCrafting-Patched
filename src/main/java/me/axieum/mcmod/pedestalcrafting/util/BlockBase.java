@@ -1,6 +1,7 @@
 package me.axieum.mcmod.pedestalcrafting.util;
 
 import me.axieum.mcmod.pedestalcrafting.PedestalCrafting;
+import me.axieum.mcmod.pedestalcrafting.Tags;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -20,7 +21,7 @@ public class BlockBase extends Block
         super(material);
 
         this.name = name;
-        setUnlocalizedName(name);
+        setTranslationKey(name);
         setRegistryName(name);
     }
 
@@ -43,7 +44,7 @@ public class BlockBase extends Block
                 Item.getItemFromBlock(this),
                 0,
                 new ModelResourceLocation(
-                        PedestalCrafting.MOD_ID + ":" + getRegistryName(),
+                        Tags.MOD_ID + ":" + getRegistryName(),
                         "inventory"
                 )
         );

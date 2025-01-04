@@ -2,6 +2,7 @@ package me.axieum.mcmod.pedestalcrafting.compat.waila;
 
 import mcp.mobius.waila.api.*;
 import me.axieum.mcmod.pedestalcrafting.PedestalCrafting;
+import me.axieum.mcmod.pedestalcrafting.Tags;
 import me.axieum.mcmod.pedestalcrafting.block.BlockPedestal;
 import me.axieum.mcmod.pedestalcrafting.block.BlockPedestalCore;
 import me.axieum.mcmod.pedestalcrafting.recipe.PedestalRecipe;
@@ -28,7 +29,7 @@ public class WAILACompat implements IWailaDataProvider
         FMLInterModComms.sendFunctionMessage(
                 "waila",
                 "register",
-                "me.axieum.mcmod." + PedestalCrafting.MOD_ID + ".compat.waila.WAILACompat.register"
+                "me.axieum.mcmod." + Tags.MOD_ID + ".compat.waila.WAILACompat.register"
         );
     }
 

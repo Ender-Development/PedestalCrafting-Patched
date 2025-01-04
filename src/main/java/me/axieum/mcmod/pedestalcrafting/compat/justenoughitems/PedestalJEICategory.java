@@ -1,6 +1,7 @@
 package me.axieum.mcmod.pedestalcrafting.compat.justenoughitems;
 
 import me.axieum.mcmod.pedestalcrafting.PedestalCrafting;
+import me.axieum.mcmod.pedestalcrafting.Tags;
 import me.axieum.mcmod.pedestalcrafting.block.BlockPedestalCore;
 import me.axieum.mcmod.pedestalcrafting.block.ModBlocks;
 import mezz.jei.api.IJeiHelpers;
@@ -22,7 +23,7 @@ public class PedestalJEICategory implements IRecipeCategory<PedestalJEIWrapper>
     public static final String UID = "pedestalcrafting:pedestal";
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(
-            PedestalCrafting.MOD_ID,
+            Tags.MOD_ID,
             "textures/jei/pedestal_category.png"
     );
     private final IDrawable BACKGROUND;
@@ -55,7 +56,7 @@ public class PedestalJEICategory implements IRecipeCategory<PedestalJEIWrapper>
     @Override
     public String getModName()
     {
-        return PedestalCrafting.MOD_NAME;
+        return Tags.MOD_NAME;
     }
 
     @Override
@@ -101,7 +102,7 @@ public class PedestalJEICategory implements IRecipeCategory<PedestalJEIWrapper>
     }
 
     /**
-     * @see https://github.com/AgriCraft/AgriCraft/commit/4cfc7527adf41cb5f0d3a1b0de67c8b202bc1eaa#diff-2716014db01489421463eb15b0f11c28R102
+     * @see <a href="https://github.com/AgriCraft/AgriCraft/commit/4cfc7527adf41cb5f0d3a1b0de67c8b202bc1eaa#diff-2716014db01489421463eb15b0f11c28R102">...</a>
      */
     private Point rotatePointAbout(Point in, Point about, double degrees)
     {
