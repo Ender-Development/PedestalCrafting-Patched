@@ -3,6 +3,7 @@ package me.axieum.mcmod.pedestalcrafting.recipe;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -12,42 +13,31 @@ import java.util.HashMap;
 import java.util.List;
 
 public class PedestalRecipe {
-    private final ItemStack core;
+    private final Ingredient core;
     private final ItemStack output;
-    private final ArrayList<Object> input = new ArrayList<>();
+    private final ArrayList<Ingredient> input;
     private final int ticks;
     private final ArrayList<HashMap<EnumParticleTypes, Integer>> particles = new ArrayList<>(
             3);
 
-    public PedestalRecipe(ItemStack output, int ticks, ItemStack core, Object... inputs) {
+    public PedestalRecipe(ItemStack output, int ticks, Ingredient core, ArrayList<Ingredient> inputs) {
         this.core = core;
         this.ticks = ticks > 0 ? ticks : 3;
         this.output = output;
-
-        for (Object input : inputs) {
-            if (input instanceof ItemStack) {
-                this.input.add(((ItemStack) input).copy());
-            } else if (input instanceof Item) {
-                this.input.add(new ItemStack((Item) input));
-            } else if (input instanceof Block) {
-                this.input.add(new ItemStack((Block) input));
-            } else if (input instanceof String) {
-                this.input.add(OreDictionary.getOres((String) input));
-            } else if (input instanceof List) {
-                this.input.add(input);
-            } else {
-                throw new RuntimeException("Invalid inputs for Pedestal Crafting recipe with core item: " + core.getDisplayName());
-            }
-        }
+        this.input = inputs;
 
         // Initialise default particle effects, in case not overriden
         this.initParticles();
+        this.addDefaultParticles();
+    }
+
+    public void addDefaultParticles() {
         this.addParticleCrafting(EnumParticleTypes.END_ROD, 2);
         this.addParticlePostCraftCore(EnumParticleTypes.CLOUD, 25);
         this.addParticlePostCraftPedestal(EnumParticleTypes.SMOKE_NORMAL, 15);
     }
 
-    private void initParticles() {
+    public void initParticles() {
         this.particles.add(0, new HashMap<>());
         this.particles.add(1, new HashMap<>());
         this.particles.add(2, new HashMap<>());
@@ -97,11 +87,11 @@ public class PedestalRecipe {
         return this;
     }
 
-    public ItemStack getCore() {
+    public Ingredient getCore() {
         return core;
     }
 
-    public ArrayList<Object> getInput() {
+    public ArrayList<Ingredient> getInput() {
         return input;
     }
 

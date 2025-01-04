@@ -6,6 +6,7 @@ import me.axieum.mcmod.pedestalcrafting.recipe.PedestalRecipe;
 import me.axieum.mcmod.pedestalcrafting.recipe.PedestalRecipeManager;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -176,8 +177,8 @@ public class TilePedestalCore extends TileEntity implements ITickable
         if (locs.isEmpty())
             return null;
 
-        ArrayList<Object> remainingItems = new ArrayList<Object>(recipe.getInput());
-        ArrayList<TilePedestal> pedestals = new ArrayList<TilePedestal>();
+        ArrayList<Ingredient> remainingItems = new ArrayList<>(recipe.getInput());
+        ArrayList<TilePedestal> pedestals = new ArrayList<>();
 
         for (BlockPos pos : locs)
         {
@@ -187,28 +188,21 @@ public class TilePedestalCore extends TileEntity implements ITickable
                 break;
 
             TilePedestal pedestal = (TilePedestal) tileEntity;
-            for (Object item : remainingItems) {
+
+            for (Ingredient ingredient : remainingItems)
+            {
                 boolean isMatch = false;
                 ItemStack pedestalItem = pedestal.inventory.getStackInSlot(0);
 
-                if (item instanceof ItemStack) {
-                    boolean itemMatches = OreDictionary.itemMatches((ItemStack) item, pedestalItem, false);
-                    boolean tagMatches = !((ItemStack) item).hasTagCompound() || ItemStack.areItemStackTagsEqual(
-                            (ItemStack) item,
-                            pedestalItem
-                    );
-                    isMatch = itemMatches && tagMatches;
-                } else if (item instanceof List) {
-                    for (ItemStack itemStack : (List<ItemStack>) item) {
-                        isMatch = OreDictionary.itemMatches(itemStack, pedestalItem, false);
-                        if (isMatch)
-                            break;
-                    }
+                if (ingredient.apply(pedestalItem))
+                {
+                    isMatch = true;
                 }
 
-                if (isMatch) {
+                if (isMatch)
+                {
                     pedestals.add(pedestal);
-                    remainingItems.remove(item);
+                    remainingItems.remove(ingredient);
                     break;
                 }
             }

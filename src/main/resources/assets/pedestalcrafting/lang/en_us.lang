@@ -42,3 +42,12 @@ tile.pedestal_core.logspruce.name=Spruce Wood Pedestal Core
 tile.pedestal_core.obsidian.name=Obsidian Pedestal Core
 tile.pedestal_core.quartzblock.name=Quartz Pedestal Core
 tile.pedestal_core.sandstone.name=Sandstone Pedestal Core
+
+# GroovyScript
+
+groovyscript.wiki.pedestalcrafting.pedestal_crafting.title=Pedestal Crafting
+groovyscript.wiki.pedestalcrafting.pedestal_crafting.description=Converts a variable number of input items into a single output item. The recipe can be customized with various particles.
+groovyscript.wiki.pedestalcrafting.pedestal_crafting.ticks.value=The number of ticks the recipe takes to complete.
+groovyscript.wiki.pedestalcrafting.pedestal_crafting.particlesCrafting.value=Adds a particle effect to the crafting process. The first argument is the particle name, the second argument is the amount of the particles appearing. Names can be referenced from the Minecraft Wiki.
+groovyscript.wiki.pedestalcrafting.pedestal_crafting.particlesPostCraftCore.value=Adds a particle effect that appears above the core after the crafting process is completed. The first argument is the particle name, the second argument is the amount of the particles appearing. Names can be referenced from the Minecraft Wiki.
+groovyscript.wiki.pedestalcrafting.pedestal_crafting.particlesPostCraftPedestal.value=Adds a particle effect that appears above each pedestal after the crafting process is completed. The first argument is the particle name, the second argument is the amount of the particles appearing. Names can be referenced from the Minecraft Wiki.

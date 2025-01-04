@@ -10,13 +10,17 @@ import me.axieum.mcmod.pedestalcrafting.Tags;
 import me.axieum.mcmod.pedestalcrafting.recipe.PedestalRecipe;
 import me.axieum.mcmod.pedestalcrafting.recipe.PedestalRecipeManager;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.ArrayUtils;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Objects;
 
 @ZenClass("mods." + Tags.MOD_ID + ".Pedestal")
 public class Pedestal
@@ -25,10 +29,12 @@ public class Pedestal
     @ZenDoc("Adds a new pedestal crafting recipe")
     public static void addRecipe(IItemStack output, int ticks, IItemStack core, IIngredient[] ingredients)
     {
+        Ingredient coreIngredient = Ingredient.fromStacks((ItemStack) core.getInternal());
+        ItemStack outputItem = (ItemStack) output.getInternal();
         CraftTweakerAPI.apply(new Add(new PedestalRecipe(
-                toItemStack(output),
+                outputItem,
                 ticks,
-                toItemStack(core),
+                coreIngredient,
                 toObjects(ingredients)
         )));
     }
@@ -37,10 +43,12 @@ public class Pedestal
     @ZenDoc("Adds a new pedestal crafting recipe whilst overriding the default particles")
     public static void addRecipe(IItemStack output, int ticks, IItemStack core, IIngredient[] ingredients, String[][] particlesCrafting, String[][] particlesPostCraftCore, String[][] particlesPostCraftPedestal)
     {
+        Ingredient coreIngredient = Ingredient.fromStacks((ItemStack) core.getInternal());
+        ItemStack outputItem = (ItemStack) output.getInternal();
         PedestalRecipe recipe = new PedestalRecipe(
-                toItemStack(output),
+                outputItem,
                 ticks,
-                toItemStack(core),
+                coreIngredient,
                 toObjects(ingredients)
         );
 
@@ -73,31 +81,25 @@ public class Pedestal
         return (ItemStack) internal;
     }
 
-    private static Object[] toObjects(IIngredient... ingredientList)
+    private static ArrayList<Ingredient> toObjects(IIngredient[] ingredientList)
     {
         if (ingredientList == null)
             return null;
 
-        Object[] ingredients = new Object[]{};
+        return new ArrayList<Ingredient>(Arrays.asList(
+                Arrays.stream(ingredientList)
+                        .map(ingredient -> {
+                            if (ingredient == null)
+                                return null;
 
-        for (IIngredient ingredient : ingredientList)
-        {
-            Object actual = toActualObject(ingredient);
-            if (actual != null)
-                ingredients = ArrayUtils.add(ingredients, actual);
-        }
+                            if (ingredient instanceof IOreDictEntry)
+                                return Ingredient.fromStacks(OreDictionary.getOres(((IOreDictEntry) ingredient).getName()).toArray(new ItemStack[0]));
 
-        return ingredients;
-    }
-
-    private static Object toActualObject(IIngredient ingredient)
-    {
-        if (ingredient instanceof IOreDictEntry)
-            return OreDictionary.getOres(((IOreDictEntry) ingredient).getName());
-        else if (ingredient instanceof IItemStack)
-            return toItemStack((IItemStack) ingredient);
-        else
-            return null;
+                            return Ingredient.fromStacks((ItemStack) ingredient.getInternal());
+                        })
+                        .filter(Objects::nonNull)
+                        .toArray(Ingredient[]::new)
+        ));
     }
 
     private static EnumParticleTypes toParticle(String name)

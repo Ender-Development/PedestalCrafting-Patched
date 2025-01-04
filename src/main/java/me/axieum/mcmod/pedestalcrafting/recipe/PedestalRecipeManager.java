@@ -1,21 +1,24 @@
 package me.axieum.mcmod.pedestalcrafting.recipe;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class PedestalRecipeManager
 {
     private static final PedestalRecipeManager INSTANCE = new PedestalRecipeManager();
 
-    private final ArrayList<PedestalRecipe> recipes = new ArrayList<PedestalRecipe>();
+    private final List<PedestalRecipe> recipes = new ArrayList<PedestalRecipe>();
 
     public static PedestalRecipeManager getInstance()
     {
         return INSTANCE;
     }
 
-    public PedestalRecipe addRecipe(ItemStack output, int ticks, ItemStack core, Object... inputs)
+    public PedestalRecipe addRecipe(ItemStack output, int ticks, Ingredient core, ArrayList<Ingredient> inputs)
     {
         PedestalRecipe recipe = new PedestalRecipe(output, ticks, core, inputs);
         recipes.add(recipe);
@@ -28,7 +31,7 @@ public class PedestalRecipeManager
         return recipe;
     }
 
-    public ArrayList<PedestalRecipe> getRecipes()
+    public List<PedestalRecipe> getRecipes()
     {
         return recipes;
     }
@@ -53,7 +56,7 @@ public class PedestalRecipeManager
         {
             for (PedestalRecipe recipe : this.getRecipes())
             {
-                if (!recipe.getCore().isEmpty() && recipe.getCore().isItemEqual(itemStack))
+                if (!(recipe.getCore().getMatchingStacks().length == 0) && Arrays.stream(recipe.getCore().getMatchingStacks()).anyMatch(itemStack::isItemEqual))
                     validRecipes.add(recipe);
             }
         }
