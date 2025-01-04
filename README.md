@@ -4,6 +4,19 @@ This is a fork of [Pedestal Crafting](https://www.curseforge.com/minecraft/mc-mo
 
 <a href="https://www.akliz.net/enderman"><img src="https://github.com/Ender-Development/PatchouliBooks/raw/master/banner.png" align="center"/></a>
 
+## Changes
+### Bugfixes
+- [Crash when loading on a server](https://github.com/axieum/PedestalCrafting/issues/22)
+- [Adding multiple particle effects to the core/pedestals after crafting only shows one](https://github.com/axieum/PedestalCrafting/issues/5)
+- [Grass Pedestal has grey texture](https://github.com/axieum/PedestalCrafting/issues/3)
+
+### Improvements
+- [Add support for ingredient transformations](https://github.com/axieum/PedestalCrafting/issues/4)
+- [Locking recipes to only accept certain pedestal variants](https://github.com/axieum/PedestalCrafting/issues/2)
+
+### More Localization
+- Indonesian, Turkish, Hindi, Dutch, German, Swedish, Arabic, Italian
+
 ## Description
 
 Pedestals can be crafted, and placed within a small area around a Pedestal Core. Items to be infused will be placed on the pedestals, while the item to be transformed will be placed on the core. Pedestals are safe for use as decorations, while the Pedestal Core is not.
