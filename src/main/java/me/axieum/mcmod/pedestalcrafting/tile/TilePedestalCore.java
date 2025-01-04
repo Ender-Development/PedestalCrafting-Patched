@@ -1,5 +1,6 @@
 package me.axieum.mcmod.pedestalcrafting.tile;
 
+import me.axieum.mcmod.pedestalcrafting.Settings;
 import me.axieum.mcmod.pedestalcrafting.block.BlockPedestal;
 import me.axieum.mcmod.pedestalcrafting.recipe.PedestalRecipe;
 import me.axieum.mcmod.pedestalcrafting.recipe.PedestalRecipeManager;
@@ -10,7 +11,6 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
@@ -23,12 +23,15 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 public class TilePedestalCore extends TileEntity implements ITickable
 {
     public int elapsed = 0;
     public int pedestalCount = 0;
+
+    public final int RADIUS_HORIZONTAL = Settings.horizontalRadius;
+    public final int RADIUS_VERTICAL = Settings.verticalRadius;
+
     public ItemStackHandler inventory = new ItemStackHandler(1)
     {
         @Override
@@ -59,68 +62,59 @@ public class TilePedestalCore extends TileEntity implements ITickable
         if (recipe != null)
         {
             ArrayList<TilePedestal> pedestals = this.getActivePedestals(recipe, pedestalLocs);
-            if (this.process(recipe))
+            if (this.process(recipe) && pedestals != null)
             {
-                for (TilePedestal pedestal : pedestals)
-                {
+                pedestals.forEach(pedestal -> {
                     pedestal.inventory.setStackInSlot(0, ItemStack.EMPTY);
                     pedestal.markDirty();
-                    if (recipe.getParticles().size() >= 3)
-                    {
-                        int particleIndex = new Random().nextInt(recipe.getParticles().get(2).size());
-                        EnumParticleTypes particle = (EnumParticleTypes) recipe.getParticles().get(2).keySet().toArray()[particleIndex];
+                    recipe.getPostCraftPedestalParticles().forEach((particle, count) -> {
                         ((WorldServer) this.getWorld()).spawnParticle(
                                 particle,
                                 false,
                                 pedestal.getPos().getX() + 0.5D,
-                                pedestal.getPos().getY() + 1.4D,
+                                pedestal.getPos().getY() + 1.5D,
                                 pedestal.getPos().getZ() + 0.5D,
-                                recipe.getParticles().get(2).get(particle),
+                                count,
                                 0,
                                 0,
                                 0, 0.1D
                         );
-                    }
-                }
+                    });
+                });
 
                 this.inventory.setStackInSlot(0, recipe.getOutput().copy());
                 this.elapsed = 0;
                 this.markDirty();
 
-                if (recipe.getParticles().size() >= 2)
-                {
-                    int particleIndex = new Random().nextInt(recipe.getParticles().get(1).size());
-                    EnumParticleTypes particle = (EnumParticleTypes) recipe.getParticles().get(1).keySet().toArray()[particleIndex];
+                recipe.getPostCraftCoreParticles().forEach((particle, count) -> {
                     ((WorldServer) this.getWorld()).spawnParticle(
                             particle,
                             false,
                             this.getPos().getX() + 0.5D,
                             this.getPos().getY() + 1.5D,
                             this.getPos().getZ() + 0.5D,
-                            recipe.getParticles().get(1).get(particle),
+                            count,
                             0,
                             0,
                             0, 0.1D
                     );
-                }
+                });
+
             } else
             {
-                if (recipe.getParticles().size() >= 1)
-                {
-                    int particleIndex = new Random().nextInt(recipe.getParticles().get(0).size());
-                    EnumParticleTypes particle = (EnumParticleTypes) recipe.getParticles().get(0).keySet().toArray()[particleIndex];
+                recipe.getCraftingParticles().forEach((particle, count) -> {
                     ((WorldServer) this.getWorld()).spawnParticle(
                             particle,
                             false,
                             this.getPos().getX() + 0.5D,
                             this.getPos().getY() + 1.5D,
                             this.getPos().getZ() + 0.5D,
-                            recipe.getParticles().get(0).get(particle),
+                            count,
                             0,
                             0,
                             0, 0.1D
                     );
-                }
+                });
             }
         } else
         {
@@ -164,9 +158,9 @@ public class TilePedestalCore extends TileEntity implements ITickable
     private ArrayList<BlockPos> findPedestals()
     {
         ArrayList<BlockPos> pedestalLocs = new ArrayList<BlockPos>();
-        Iterable<BlockPos> blocksToCheck = this.getPos().getAllInBox(
-                this.getPos().add(-3, -1, -3),
-                this.getPos().add(3, 1, 3)
+        Iterable<BlockPos> blocksToCheck = BlockPos.getAllInBox(
+                this.getPos().add(-RADIUS_HORIZONTAL, -RADIUS_VERTICAL, -RADIUS_HORIZONTAL),
+                this.getPos().add(RADIUS_HORIZONTAL, RADIUS_VERTICAL, RADIUS_HORIZONTAL)
         );
 
         for (BlockPos blockPos : blocksToCheck)
@@ -193,35 +187,28 @@ public class TilePedestalCore extends TileEntity implements ITickable
                 break;
 
             TilePedestal pedestal = (TilePedestal) tileEntity;
-            Iterator<Object> remainingIterator = remainingItems.iterator();
-            while (remainingIterator.hasNext())
-            {
+            for (Object item : remainingItems) {
                 boolean isMatch = false;
-                Object remainingItem = remainingIterator.next();
                 ItemStack pedestalItem = pedestal.inventory.getStackInSlot(0);
 
-                if (remainingItem instanceof ItemStack)
-                {
-                    boolean itemMatches = OreDictionary.itemMatches((ItemStack) remainingItem, pedestalItem, false);
-                    boolean tagMatches = !((ItemStack) remainingItem).hasTagCompound() || ItemStack.areItemStackTagsEqual(
-                            (ItemStack) remainingItem,
+                if (item instanceof ItemStack) {
+                    boolean itemMatches = OreDictionary.itemMatches((ItemStack) item, pedestalItem, false);
+                    boolean tagMatches = !((ItemStack) item).hasTagCompound() || ItemStack.areItemStackTagsEqual(
+                            (ItemStack) item,
                             pedestalItem
                     );
                     isMatch = itemMatches && tagMatches;
-                } else if (remainingItem instanceof List)
-                {
-                    for (ItemStack itemStack : (List<ItemStack>) remainingItem)
-                    {
+                } else if (item instanceof List) {
+                    for (ItemStack itemStack : (List<ItemStack>) item) {
                         isMatch = OreDictionary.itemMatches(itemStack, pedestalItem, false);
                         if (isMatch)
                             break;
                     }
                 }
 
-                if (isMatch)
-                {
+                if (isMatch) {
                     pedestals.add(pedestal);
-                    remainingItems.remove(remainingItem);
+                    remainingItems.remove(item);
                     break;
                 }
             }
