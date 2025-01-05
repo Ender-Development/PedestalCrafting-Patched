@@ -8,24 +8,25 @@ import com.cleanroommc.groovyscript.helper.SimpleObjectStream;
 import com.cleanroommc.groovyscript.helper.recipe.AbstractRecipeBuilder;
 import com.cleanroommc.groovyscript.registry.VirtualizedRegistry;
 import com.google.common.collect.Lists;
-import groovyjarjarantlr4.v4.runtime.misc.Nullable;
 import me.axieum.mcmod.pedestalcrafting.Tags;
 import me.axieum.mcmod.pedestalcrafting.recipe.PedestalRecipe;
 import me.axieum.mcmod.pedestalcrafting.recipe.PedestalRecipeManager;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.EnumParticleTypes;
-import scala.Int;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 @RegistryDescription(linkGenerator = Tags.MOD_ID)
 public class PedestalCrafting extends VirtualizedRegistry<PedestalRecipe> {
     @RecipeBuilderDescription(example = {
-            @Example(".input(ore('stickWood'),ore('plankWood'),ore('logWood'),item('minecraft:stick')).output(item('minecraft:diamond')).ticks(100)"),
-            @Example(".input(item('minecraft:chest'),item('minecraft:piston')).output(item('minecraft:emerald')).ticks(100).addCraftingParticle('fireworkSpark', 10)"),
-            @Example(".input(item('minecraft:hopper'),item('minecraft:chest')).output(item('minecraft:stone')).ticks(100).addCraftingParticle('bubble', 10).addPostCraftCoreParticle('suspended', 10)"),
-            @Example(".input(item('minecraft:cobblestone'), ore('ingotGold')).output(item('minecraft:redstone')).ticks(100).addCraftingParticle('instantSpell', 10).addPostCraftCoreParticle('dripLava', 10).addPostCraftPedestalParticle('portal', 10)")
+            @Example(".center(ore('oreIron')).input(ore('stickWood'),ore('plankWood'),ore('logWood'),item('minecraft:stick')).output(item('minecraft:diamond')).ticks(100)"),
+            @Example(".center(ore('oreGold')).input(item('minecraft:chest'),item('minecraft:piston')).output(item('minecraft:emerald')).ticks(100).addCraftingParticle('fireworkSpark', 10)"),
+            @Example(".center(ore('oreDiamond')).input(item('minecraft:hopper'),item('minecraft:chest')).output(item('minecraft:stone')).ticks(100).addCraftingParticle('bubble', 10).addPostCraftCoreParticle('suspended', 10)"),
+            @Example(".center(ore('oreRedstone')).input(item('minecraft:cobblestone'), ore('ingotGold')).output(item('minecraft:redstone')).ticks(100).addCraftingParticle('instantSpell', 10).addPostCraftCoreParticle('dripLava', 10).addPostCraftPedestalParticle('portal', 10)")
     })
     public RecipeBuilder recipeBuilder() {
         return new RecipeBuilder();
@@ -64,6 +65,17 @@ public class PedestalCrafting extends VirtualizedRegistry<PedestalRecipe> {
         });
     }
 
+    @MethodDescription(type = MethodDescription.Type.REMOVAL, example = @Example("item('minecraft:redstone_block')"))
+    public boolean removeByInput(IIngredient input) {
+        return PedestalRecipeManager.getInstance().getRecipes().removeIf(r -> {
+            if (r.getInput().stream().map(Ingredient::getMatchingStacks).anyMatch(s -> Arrays.stream(s).anyMatch(input))) {
+                addBackup(r);
+                return true;
+            }
+            return false;
+        });
+    }
+
     @MethodDescription(type = MethodDescription.Type.QUERY)
     public SimpleObjectStream<PedestalRecipe> streamRecipes() {
         return new SimpleObjectStream<>(PedestalRecipeManager.getInstance().getRecipes()).setRemover(this::remove);
@@ -75,21 +87,24 @@ public class PedestalCrafting extends VirtualizedRegistry<PedestalRecipe> {
         PedestalRecipeManager.getInstance().getRecipes().clear();
     }
 
-    @Property(property = "input", comp = @Comp(gte = 2))
+    @Property(property = "input", comp = @Comp(gte = 1))
     @Property(property = "output", comp = @Comp(eq = 1))
     public static class RecipeBuilder extends AbstractRecipeBuilder<PedestalRecipe> {
 
         @Property
-        private HashMap<EnumParticleTypes, Integer> particlesCrafting = new HashMap<>();
+        private Map<EnumParticleTypes, Integer> particlesCrafting = new HashMap<>();
 
         @Property
-        private HashMap<EnumParticleTypes, Integer> particlesPostCraftCore = new HashMap<>();
+        private Map<EnumParticleTypes, Integer> particlesPostCraftCore = new HashMap<>();
 
         @Property
-        private HashMap<EnumParticleTypes, Integer> particlesPostCraftPedestal = new HashMap<>();
+        private Map<EnumParticleTypes, Integer> particlesPostCraftPedestal = new HashMap<>();
 
-        @Property(comp = @Comp(gte = 5), defaultValue = "5")
-        private Integer ticks = 5;
+        @Property
+        private IIngredient center;
+
+        @Property(comp = @Comp(gte = 0), defaultValue = "0")
+        private int ticks = 0;
 
         @RecipeBuilderMethodDescription(field = "particlesCrafting")
         public RecipeBuilder addCraftingParticle(String particle, int count) {
@@ -127,6 +142,12 @@ public class PedestalCrafting extends VirtualizedRegistry<PedestalRecipe> {
             return this;
         }
 
+        @RecipeBuilderMethodDescription(field = "center")
+        public RecipeBuilder center(IIngredient center) {
+            this.center = center;
+            return this;
+        }
+
         @RecipeBuilderMethodDescription(field = "ticks")
         public RecipeBuilder ticks(Integer ticks) {
             this.ticks = ticks;
@@ -141,8 +162,9 @@ public class PedestalCrafting extends VirtualizedRegistry<PedestalRecipe> {
         @Override
         public void validate(GroovyLog.Msg msg) {
             validateFluids(msg);
-            validateItems(msg, 2, Int.MaxValue(), 1, 1);
-            msg.add(ticks < 5, "ticks must be greater or equal 5, yet it was {}", ticks);
+            validateItems(msg, 1, Integer.MAX_VALUE, 1, 1);
+            msg.add(center == null, "core must be defined");
+            msg.add(ticks < 0, "ticks must be a nonnegative integer, yet it was {}", ticks);
         }
 
         @Override
@@ -150,16 +172,10 @@ public class PedestalCrafting extends VirtualizedRegistry<PedestalRecipe> {
         public @Nullable PedestalRecipe register() {
             if (!validate()) return null;
             ArrayList<Ingredient> outerIngredients = Lists.newArrayList();
-            for (int i = 1; i < input.size(); i++) {
-                outerIngredients.add(input.get(i).toMcIngredient());
-            }
-            PedestalRecipe recipe = new PedestalRecipe(output.get(0), ticks, input.get(0).toMcIngredient(), outerIngredients);
+            for (IIngredient i : input) outerIngredients.add(i.toMcIngredient());
+            PedestalRecipe recipe = new PedestalRecipe(output.get(0), ticks, center.toMcIngredient(), outerIngredients);
             recipe.initParticles();
-            if (particlesCrafting.isEmpty() && particlesPostCraftCore.isEmpty() && particlesPostCraftPedestal.isEmpty()) {
-                recipe.addDefaultParticles();
-            } else {
-                recipe.setParticles(particlesCrafting, particlesPostCraftCore, particlesPostCraftPedestal);
-            }
+            recipe.setParticles(particlesCrafting, particlesPostCraftCore, particlesPostCraftPedestal);
             GSPlugin.instance.pedestalCrafting.add(recipe);
             return recipe;
         }

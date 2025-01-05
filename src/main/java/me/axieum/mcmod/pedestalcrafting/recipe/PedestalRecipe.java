@@ -10,7 +10,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
 public class PedestalRecipe {
     private final Ingredient core;
@@ -22,7 +22,7 @@ public class PedestalRecipe {
 
     public PedestalRecipe(ItemStack output, int ticks, Ingredient core, ArrayList<Ingredient> inputs) {
         this.core = core;
-        this.ticks = ticks > 0 ? ticks : 3;
+        this.ticks = ticks > 0 ? ticks : 5;
         this.output = output;
         this.input = inputs;
 
@@ -43,10 +43,10 @@ public class PedestalRecipe {
         this.particles.add(2, new HashMap<>());
     }
 
-    public PedestalRecipe setParticles(@Nullable HashMap<EnumParticleTypes, Integer> particlesCrafting, @Nullable HashMap<EnumParticleTypes, Integer> particlesPostCraftCore, @Nullable HashMap<EnumParticleTypes, Integer> particlesPostCraftPedestal) {
-        this.particles.set(0, particlesCrafting);
-        this.particles.set(1, particlesPostCraftCore);
-        this.particles.set(2, particlesPostCraftPedestal);
+    public PedestalRecipe setParticles(@Nullable Map<EnumParticleTypes, Integer> particlesCrafting, @Nullable Map<EnumParticleTypes, Integer> particlesPostCraftCore, @Nullable Map<EnumParticleTypes, Integer> particlesPostCraftPedestal) {
+        this.particles.set(0, (HashMap<EnumParticleTypes, Integer>) particlesCrafting);
+        this.particles.set(1, (HashMap<EnumParticleTypes, Integer>) particlesPostCraftCore);
+        this.particles.set(2, (HashMap<EnumParticleTypes, Integer>) particlesPostCraftPedestal);
 
         return this;
     }
