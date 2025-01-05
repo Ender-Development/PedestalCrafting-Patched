@@ -76,6 +76,17 @@ public class PedestalCrafting extends VirtualizedRegistry<PedestalRecipe> {
         });
     }
 
+    @MethodDescription(type = MethodDescription.Type.REMOVAL, description = "groovyscript.wiki.pedestalcrafting.pedestal_crafting.removebycenter", example = @Example("item('minecraft:wool')"))
+    public boolean removeByCenter(IIngredient input) {
+        return PedestalRecipeManager.getInstance().getRecipes().removeIf(r -> {
+            if (Arrays.stream(r.getCore().getMatchingStacks()).anyMatch(input)) {
+                addBackup(r);
+                return true;
+            }
+            return false;
+        });
+    }
+
     @MethodDescription(type = MethodDescription.Type.QUERY)
     public SimpleObjectStream<PedestalRecipe> streamRecipes() {
         return new SimpleObjectStream<>(PedestalRecipeManager.getInstance().getRecipes()).setRemover(this::remove);
@@ -100,7 +111,7 @@ public class PedestalCrafting extends VirtualizedRegistry<PedestalRecipe> {
         @Property
         private Map<EnumParticleTypes, Integer> particlesPostCraftPedestal = new HashMap<>();
 
-        @Property
+        @Property(comp = @Comp(not = "null"))
         private IIngredient center;
 
         @Property(comp = @Comp(gte = 0), defaultValue = "0")

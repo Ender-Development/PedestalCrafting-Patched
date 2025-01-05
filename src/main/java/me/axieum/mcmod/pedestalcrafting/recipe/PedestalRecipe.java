@@ -1,11 +1,8 @@
 package me.axieum.mcmod.pedestalcrafting.recipe;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -28,7 +25,6 @@ public class PedestalRecipe {
 
         // Initialise default particle effects, in case not overriden
         this.initParticles();
-        this.addDefaultParticles();
     }
 
     public void addDefaultParticles() {
@@ -44,9 +40,13 @@ public class PedestalRecipe {
     }
 
     public PedestalRecipe setParticles(@Nullable Map<EnumParticleTypes, Integer> particlesCrafting, @Nullable Map<EnumParticleTypes, Integer> particlesPostCraftCore, @Nullable Map<EnumParticleTypes, Integer> particlesPostCraftPedestal) {
+
         this.particles.set(0, (HashMap<EnumParticleTypes, Integer>) particlesCrafting);
         this.particles.set(1, (HashMap<EnumParticleTypes, Integer>) particlesPostCraftCore);
         this.particles.set(2, (HashMap<EnumParticleTypes, Integer>) particlesPostCraftPedestal);
+
+        if (this.particles.stream().allMatch(HashMap::isEmpty))
+            this.addDefaultParticles();
 
         return this;
     }

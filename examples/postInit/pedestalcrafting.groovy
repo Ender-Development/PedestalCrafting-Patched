@@ -5,8 +5,10 @@
 log.info 'mod \'pedestalcrafting\' detected, running script'
 
 // Pedestal Crafting:
-// Converts a number of 2+ inputs into a single output item. The recipe can be customized with various particles.
+// Converts a center item and one or more surrounding inputs into a single output item. The recipe can be customized with
+// various particles.
 
+mods.pedestalcrafting.pedestal_crafting.removeByCenter(item('minecraft:wool'))
 mods.pedestalcrafting.pedestal_crafting.removeByInput(item('minecraft:redstone_block'))
 mods.pedestalcrafting.pedestal_crafting.removeByOutput(item('minecraft:stick'))
 // mods.pedestalcrafting.pedestal_crafting.removeAll()
