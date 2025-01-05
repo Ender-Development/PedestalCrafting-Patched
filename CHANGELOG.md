@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.1.1] - 2025-01-05
+### Changes
+- tweaked the GroovyScript support
+- all changes were requested by @WaitingIdly
+
 ## [1.1.0] - 2025-01-04
 ### Changes
 - Added support for [GroovyScript](https://cleanroommc.com/groovy-script/)
