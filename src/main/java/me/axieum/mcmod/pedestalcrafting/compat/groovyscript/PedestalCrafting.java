@@ -23,7 +23,8 @@ import java.util.Map;
 @RegistryDescription(linkGenerator = Tags.MOD_ID)
 public class PedestalCrafting extends VirtualizedRegistry<PedestalRecipe> {
     @RecipeBuilderDescription(example = {
-            @Example(".center(ore('oreIron')).input(ore('stickWood'),ore('plankWood'),ore('logWood'),item('minecraft:stick')).output(item('minecraft:diamond')).ticks(100)"),
+            @Example(".center(item('minecraft:lava_bucket')).output(item('minecraft:obsidian')).ticks(100)"),
+            @Example(".center(ore('plankWood')).input(ore('stickWood'),item('minecraft:water_bucket'),ore('logWood')).output(item('minecraft:diamond')).ticks(100)"),
             @Example(".center(ore('oreGold')).input(item('minecraft:chest'),item('minecraft:piston')).output(item('minecraft:emerald')).ticks(100).addCraftingParticle('fireworkSpark', 10)"),
             @Example(".center(ore('oreDiamond')).input(item('minecraft:hopper'),item('minecraft:chest')).output(item('minecraft:stone')).ticks(100).addCraftingParticle('bubble', 10).addPostCraftCoreParticle('suspended', 10)"),
             @Example(".center(ore('oreRedstone')).input(item('minecraft:cobblestone'), ore('ingotGold')).output(item('minecraft:redstone')).ticks(100).addCraftingParticle('instantSpell', 10).addPostCraftCoreParticle('dripLava', 10).addPostCraftPedestalParticle('portal', 10)")
@@ -98,7 +99,7 @@ public class PedestalCrafting extends VirtualizedRegistry<PedestalRecipe> {
         PedestalRecipeManager.getInstance().getRecipes().clear();
     }
 
-    @Property(property = "input", comp = @Comp(gte = 1))
+    @Property(property = "input", comp = @Comp(gte = 0))
     @Property(property = "output", comp = @Comp(eq = 1))
     public static class RecipeBuilder extends AbstractRecipeBuilder<PedestalRecipe> {
 
@@ -160,7 +161,7 @@ public class PedestalCrafting extends VirtualizedRegistry<PedestalRecipe> {
         }
 
         @RecipeBuilderMethodDescription(field = "ticks")
-        public RecipeBuilder ticks(Integer ticks) {
+        public RecipeBuilder ticks(int ticks) {
             this.ticks = ticks;
             return this;
         }
@@ -173,7 +174,7 @@ public class PedestalCrafting extends VirtualizedRegistry<PedestalRecipe> {
         @Override
         public void validate(GroovyLog.Msg msg) {
             validateFluids(msg);
-            validateItems(msg, 1, Integer.MAX_VALUE, 1, 1);
+            validateItems(msg, 0, Integer.MAX_VALUE, 1, 1);
             msg.add(center == null, "core must be defined");
             msg.add(ticks < 0, "ticks must be a nonnegative integer, yet it was {}", ticks);
         }

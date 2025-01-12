@@ -5,6 +5,7 @@ import me.axieum.mcmod.pedestalcrafting.block.BlockPedestal;
 import me.axieum.mcmod.pedestalcrafting.recipe.PedestalRecipe;
 import me.axieum.mcmod.pedestalcrafting.recipe.PedestalRecipeManager;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,25 +26,21 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class TilePedestalCore extends TileEntity implements ITickable
-{
+public class TilePedestalCore extends TileEntity implements ITickable {
     public int elapsed = 0;
     public int pedestalCount = 0;
 
     public final int RADIUS_HORIZONTAL = Settings.horizontalRadius;
     public final int RADIUS_VERTICAL = Settings.verticalRadius;
 
-    public ItemStackHandler inventory = new ItemStackHandler(1)
-    {
+    public ItemStackHandler inventory = new ItemStackHandler(1) {
         @Override
-        public int getSlotLimit(int slot)
-        {
+        public int getSlotLimit(int slot) {
             return 1;
         }
 
         @Override
-        protected void onContentsChanged(int slot)
-        {
+        protected void onContentsChanged(int slot) {
             super.onContentsChanged(slot);
             TilePedestalCore.this.markDirty();
 
@@ -53,35 +50,45 @@ public class TilePedestalCore extends TileEntity implements ITickable
     };
 
     @Override
-    public void update()
-    {
-        if (this.getWorld().isRemote)
+    public void update() {
+        if (this.getWorld().isRemote) {
             return;
+        }
 
         ArrayList<BlockPos> pedestalLocs = this.findPedestals();
         PedestalRecipe recipe = this.getRecipe(pedestalLocs);
-        if (recipe != null)
-        {
+        if (recipe != null) {
             ArrayList<TilePedestal> pedestals = this.getActivePedestals(recipe, pedestalLocs);
-            if (this.process(recipe) && pedestals != null)
-            {
-                pedestals.forEach(pedestal -> {
-                    pedestal.inventory.setStackInSlot(0, ItemStack.EMPTY);
-                    pedestal.markDirty();
-                    recipe.getPostCraftPedestalParticles().forEach((particle, count) -> {
-                        ((WorldServer) this.getWorld()).spawnParticle(
-                                particle,
-                                false,
-                                pedestal.getPos().getX() + 0.5D,
-                                pedestal.getPos().getY() + 1.5D,
-                                pedestal.getPos().getZ() + 0.5D,
-                                count,
-                                0,
-                                0,
-                                0, 0.1D
-                        );
+            int actualPedestals = pedestals != null ? pedestals.size() : 0;
+            int requiredPedestals = recipe.getInput().size();
+            if (this.process(recipe) && requiredPedestals <= actualPedestals) {
+                if (requiredPedestals > 0) {
+                    pedestals.forEach(pedestal -> {
+                        ItemStack pedestalItem = pedestal.inventory.getStackInSlot(0).getItem().getContainerItem(pedestal.inventory.getStackInSlot(0));
+                        pedestal.inventory.setStackInSlot(0, pedestalItem);
+                        pedestal.markDirty();
+                        recipe.getPostCraftPedestalParticles().forEach((particle, count) -> {
+                            ((WorldServer) this.getWorld()).spawnParticle(
+                                    particle,
+                                    false,
+                                    pedestal.getPos().getX() + 0.5D,
+                                    pedestal.getPos().getY() + 1.5D,
+                                    pedestal.getPos().getZ() + 0.5D,
+                                    count,
+                                    0,
+                                    0,
+                                    0, 0.1D
+                            );
+                        });
                     });
-                });
+                }
+
+                ItemStack container = this.inventory.getStackInSlot(0).getItem().getContainerItem(this.inventory.getStackInSlot(0));
+                if (!container.isEmpty()) {
+                    EntityItem item = new EntityItem(world, pos.getX() + 0.5D, pos.getY() + 1D, pos.getZ() + 0.5D, container);
+                    item.setNoPickupDelay();
+                    world.spawnEntity(item);
+                }
 
                 this.inventory.setStackInSlot(0, recipe.getOutput().copy());
                 this.elapsed = 0;
@@ -101,8 +108,7 @@ public class TilePedestalCore extends TileEntity implements ITickable
                     );
                 });
 
-            } else
-            {
+            } else {
                 recipe.getCraftingParticles().forEach((particle, count) -> {
                     ((WorldServer) this.getWorld()).spawnParticle(
                             particle,
@@ -117,18 +123,15 @@ public class TilePedestalCore extends TileEntity implements ITickable
                     );
                 });
             }
-        } else
-        {
+        } else {
             this.elapsed = 0;
         }
     }
 
-    private boolean process(PedestalRecipe recipe)
-    {
+    private boolean process(PedestalRecipe recipe) {
         this.elapsed += 1;
 
-        if (this.elapsed % 5 == 0)
-        {
+        if (this.elapsed % 5 == 0) {
             this.markDirty();
 
             IBlockState state = world.getBlockState(pos);
@@ -138,69 +141,66 @@ public class TilePedestalCore extends TileEntity implements ITickable
         return this.elapsed >= recipe.getTicks();
     }
 
-    public PedestalRecipe getRecipe()
-    {
+    public PedestalRecipe getRecipe() {
         return getRecipe(findPedestals());
     }
 
-    private PedestalRecipe getRecipe(ArrayList<BlockPos> locs)
-    {
-        ArrayList<PedestalRecipe> recipes = PedestalRecipeManager.getInstance().getValidRecipes(this.inventory.getStackInSlot(
-                0));
+    private PedestalRecipe getRecipe(ArrayList<BlockPos> locs) {
+        ArrayList<PedestalRecipe> recipes = PedestalRecipeManager.getInstance().getValidRecipes(this.inventory.getStackInSlot(0));
 
-        if (!recipes.isEmpty())
-            for (PedestalRecipe recipe : recipes)
-                if (this.getActivePedestals(recipe, locs) != null)
+        if (!recipes.isEmpty()) {
+            for (PedestalRecipe recipe : recipes) {
+                if (recipe.getInput().isEmpty() || this.getActivePedestals(recipe, locs) != null) {
                     return recipe;
+                }
+            }
+        }
 
         return null;
     }
 
-    private ArrayList<BlockPos> findPedestals()
-    {
-        ArrayList<BlockPos> pedestalLocs = new ArrayList<BlockPos>();
+    private ArrayList<BlockPos> findPedestals() {
+        ArrayList<BlockPos> pedestalLocs = new ArrayList<>();
         Iterable<BlockPos> blocksToCheck = BlockPos.getAllInBox(
                 this.getPos().add(-RADIUS_HORIZONTAL, -RADIUS_VERTICAL, -RADIUS_HORIZONTAL),
                 this.getPos().add(RADIUS_HORIZONTAL, RADIUS_VERTICAL, RADIUS_HORIZONTAL)
         );
 
         for (BlockPos blockPos : blocksToCheck)
-            if (this.getWorld().getBlockState(blockPos).getBlock() instanceof BlockPedestal)
+            if (this.getWorld().getBlockState(blockPos).getBlock() instanceof BlockPedestal) {
                 pedestalLocs.add(blockPos);
+            }
 
         this.pedestalCount = pedestalLocs.size();
         return pedestalLocs;
     }
 
-    private ArrayList<TilePedestal> getActivePedestals(PedestalRecipe recipe, ArrayList<BlockPos> locs)
-    {
-        if (locs.isEmpty())
+    private ArrayList<TilePedestal> getActivePedestals(PedestalRecipe recipe, ArrayList<BlockPos> locs) {
+        if (locs.isEmpty()) {
             return null;
+        }
 
         ArrayList<Ingredient> remainingItems = new ArrayList<>(recipe.getInput());
         ArrayList<TilePedestal> pedestals = new ArrayList<>();
 
-        for (BlockPos pos : locs)
-        {
+        for (BlockPos pos : locs) {
             TileEntity tileEntity = this.getWorld().getTileEntity(pos);
 
-            if (!(tileEntity instanceof TilePedestal))
+            if (!(tileEntity instanceof TilePedestal)) {
                 break;
+            }
 
             TilePedestal pedestal = (TilePedestal) tileEntity;
 
-            for (Ingredient ingredient : remainingItems)
-            {
+            for (Ingredient ingredient : remainingItems) {
                 boolean isMatch = false;
                 ItemStack pedestalItem = pedestal.inventory.getStackInSlot(0);
 
-                if (ingredient.apply(pedestalItem))
-                {
+                if (ingredient.apply(pedestalItem)) {
                     isMatch = true;
                 }
 
-                if (isMatch)
-                {
+                if (isMatch) {
                     pedestals.add(pedestal);
                     remainingItems.remove(ingredient);
                     break;
@@ -208,21 +208,20 @@ public class TilePedestalCore extends TileEntity implements ITickable
             }
         }
 
-        if (!remainingItems.isEmpty() || pedestals.size() != recipe.getInput().size())
+        if (!remainingItems.isEmpty() || pedestals.size() != recipe.getInput().size()) {
             return null;
+        }
 
         return pedestals;
     }
 
     @Override
-    public SPacketUpdateTileEntity getUpdatePacket()
-    {
+    public SPacketUpdateTileEntity getUpdatePacket() {
         return new SPacketUpdateTileEntity(pos, 0, writeToNBT(new NBTTagCompound()));
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
-    {
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
         super.onDataPacket(net, pkt);
         readFromNBT(pkt.getNbtCompound());
 
@@ -231,37 +230,33 @@ public class TilePedestalCore extends TileEntity implements ITickable
     }
 
     @Override
-    public NBTTagCompound getUpdateTag()
-    {
+    public NBTTagCompound getUpdateTag() {
         return this.writeToNBT(new NBTTagCompound());
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound)
-    {
+    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         compound.setTag("inventory", inventory.serializeNBT());
         compound.setInteger("elapsed", elapsed);
         return super.writeToNBT(compound);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
-    {
+    public void readFromNBT(NBTTagCompound compound) {
         inventory.deserializeNBT(compound.getCompoundTag("inventory"));
         elapsed = compound.getInteger("elapsed");
         super.readFromNBT(compound);
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
-    {
+    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
         return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
     }
 
     @Nullable
+    @SuppressWarnings("unchecked")
     @Override
-    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
-    {
+    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
         return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ? (T) inventory : super.getCapability(
                 capability,
                 facing

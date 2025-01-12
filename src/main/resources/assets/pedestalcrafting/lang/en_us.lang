@@ -50,7 +50,7 @@ tile.pedestal_core.sandstone.name=Sandstone Pedestal Core
 # GroovyScript
 
 groovyscript.wiki.pedestalcrafting.pedestal_crafting.title=Pedestal Crafting
-groovyscript.wiki.pedestalcrafting.pedestal_crafting.description=Converts a center item and one or more surrounding inputs into a single output item. The recipe can be customized with various particles.
+groovyscript.wiki.pedestalcrafting.pedestal_crafting.description=Converts a center item into a single output item. Additional inputs can be placed on pedestals around the core. The crafting time as well as the particles that show during or after finishing a recipe can be customized.
 groovyscript.wiki.pedestalcrafting.pedestal_crafting.removebycenter=Removes all recipes where the center item matches the given input
 groovyscript.wiki.pedestalcrafting.pedestal_crafting.ticks.value=The number of ticks the recipe takes to complete.
 groovyscript.wiki.pedestalcrafting.pedestal_crafting.center.value=The center item that is used in the crafting process.

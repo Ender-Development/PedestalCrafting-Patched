@@ -14,8 +14,7 @@ public class PedestalRecipe {
     private final ItemStack output;
     private final ArrayList<Ingredient> input;
     private final int ticks;
-    private final ArrayList<HashMap<EnumParticleTypes, Integer>> particles = new ArrayList<>(
-            3);
+    private final ArrayList<HashMap<EnumParticleTypes, Integer>> particles = new ArrayList<>(3);
 
     public PedestalRecipe(ItemStack output, int ticks, Ingredient core, ArrayList<Ingredient> inputs) {
         this.core = core;
@@ -23,7 +22,7 @@ public class PedestalRecipe {
         this.output = output;
         this.input = inputs;
 
-        // Initialise default particle effects, in case not overriden
+        // Init empty particle maps
         this.initParticles();
     }
 
@@ -45,30 +44,30 @@ public class PedestalRecipe {
         this.particles.set(1, (HashMap<EnumParticleTypes, Integer>) particlesPostCraftCore);
         this.particles.set(2, (HashMap<EnumParticleTypes, Integer>) particlesPostCraftPedestal);
 
-        if (this.particles.stream().allMatch(HashMap::isEmpty))
+        if (this.particles.stream().allMatch(HashMap::isEmpty)) {
             this.addDefaultParticles();
-
+        }
         return this;
     }
 
     public PedestalRecipe addParticleCrafting(HashMap<EnumParticleTypes, Integer>... particles) {
-        for (HashMap<EnumParticleTypes, Integer> particle : particles)
+        for (HashMap<EnumParticleTypes, Integer> particle : particles) {
             this.particles.get(0).putAll(particle);
-
+        }
         return this;
     }
 
     public PedestalRecipe addParticlePostCraftCore(HashMap<EnumParticleTypes, Integer>... particles) {
-        for (HashMap<EnumParticleTypes, Integer> particle : particles)
+        for (HashMap<EnumParticleTypes, Integer> particle : particles) {
             this.particles.get(1).putAll(particle);
-
+        }
         return this;
     }
 
     public PedestalRecipe addParticlePostCraftPedestal(HashMap<EnumParticleTypes, Integer>... particles) {
-        for (HashMap<EnumParticleTypes, Integer> particle : particles)
+        for (HashMap<EnumParticleTypes, Integer> particle : particles) {
             this.particles.get(2).putAll(particle);
-
+        }
         return this;
     }
 

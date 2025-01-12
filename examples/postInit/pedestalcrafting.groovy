@@ -5,8 +5,8 @@
 log.info 'mod \'pedestalcrafting\' detected, running script'
 
 // Pedestal Crafting:
-// Converts a center item and one or more surrounding inputs into a single output item. The recipe can be customized with
-// various particles.
+// Converts a center item into a single output item. Additional inputs can be placed on pedestals around the core. The
+// crafting time as well as the particles that show during or after finishing a recipe can be customized.
 
 mods.pedestalcrafting.pedestal_crafting.removeByCenter(item('minecraft:wool'))
 mods.pedestalcrafting.pedestal_crafting.removeByInput(item('minecraft:redstone_block'))
@@ -14,8 +14,14 @@ mods.pedestalcrafting.pedestal_crafting.removeByOutput(item('minecraft:stick'))
 // mods.pedestalcrafting.pedestal_crafting.removeAll()
 
 mods.pedestalcrafting.pedestal_crafting.recipeBuilder()
-    .center(ore('oreIron'))
-    .input(ore('stickWood'),ore('plankWood'),ore('logWood'),item('minecraft:stick'))
+    .center(item('minecraft:lava_bucket'))
+    .output(item('minecraft:obsidian'))
+    .ticks(100)
+    .register()
+
+mods.pedestalcrafting.pedestal_crafting.recipeBuilder()
+    .center(ore('plankWood'))
+    .input(ore('stickWood'),item('minecraft:water_bucket'),ore('logWood'))
     .output(item('minecraft:diamond'))
     .ticks(100)
     .register()
