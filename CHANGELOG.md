@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.0] - 2025-01-12
+### Changes
+- further improved the GroovyScript support
+- implemented Item Transformers for Pedestal Recipes (e.g. giving back an empty bucket in a recipe that uses a water bucket)
+- allow recipes to only require a core item to craft, without needing additional pedestals
+
 ## [1.1.1] - 2025-01-05
 ### Changes
 - tweaked the GroovyScript support
