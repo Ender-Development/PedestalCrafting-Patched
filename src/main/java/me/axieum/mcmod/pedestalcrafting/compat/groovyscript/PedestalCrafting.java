@@ -186,7 +186,6 @@ public class PedestalCrafting extends VirtualizedRegistry<PedestalRecipe> {
             ArrayList<Ingredient> outerIngredients = Lists.newArrayList();
             for (IIngredient i : input) outerIngredients.add(i.toMcIngredient());
             PedestalRecipe recipe = new PedestalRecipe(output.get(0), ticks, center.toMcIngredient(), outerIngredients);
-            recipe.initParticles();
             recipe.setParticles(particlesCrafting, particlesPostCraftCore, particlesPostCraftPedestal);
             GSPlugin.instance.pedestalCrafting.add(recipe);
             return recipe;
